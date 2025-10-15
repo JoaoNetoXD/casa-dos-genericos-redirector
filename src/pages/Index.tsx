@@ -3,6 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import logoCdg from "@/assets/logo-cdg.png";
 import { trackVisit, trackButtonClick, trackRedirect, trackGroupAccess } from "@/utils/analytics";
+import { 
+  trackViewContent, 
+  trackCountdownComplete, 
+  trackWhatsAppRedirect, 
+  trackButtonInteraction,
+  trackLead,
+  trackCompleteRegistration 
+} from "@/utils/metaPixel";
 
 const Index = () => {
   const [countdown, setCountdown] = useState(5);
@@ -12,12 +20,23 @@ const Index = () => {
     // Track visit when component mounts
     trackVisit();
     
+    // Track page view for Meta Pixel
+    trackViewContent("Casa dos Genéricos - Página Principal", "Landing Page");
+    
     const timer = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
           clearInterval(timer);
+          
+          // Track countdown completion
+          trackCountdownComplete();
+          
+          // Track automatic redirect
           trackRedirect();
           trackGroupAccess();
+          trackWhatsAppRedirect('automatic');
+          trackLead();
+          
           window.location.href = whatsappGroupLink;
           return 0;
         }
@@ -28,8 +47,13 @@ const Index = () => {
   }, []);
 
   const handleJoinNow = () => {
+    // Track button interactions
     trackButtonClick();
     trackGroupAccess();
+    trackButtonInteraction('join_now', 'Quero Participar Agora!');
+    trackWhatsAppRedirect('manual');
+    trackCompleteRegistration();
+    
     window.location.href = whatsappGroupLink;
   };
   return <div className="min-h-screen bg-background flex items-center justify-center p-4">

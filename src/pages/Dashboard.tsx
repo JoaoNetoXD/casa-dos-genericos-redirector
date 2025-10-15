@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Eye, MousePointer, Users, ArrowRight, BarChart3, RefreshCw } from "lucide-react";
+import { trackDashboardAccess, trackAnalyticsView, trackViewContent } from "@/utils/metaPixel";
 
 interface Analytics {
   totalVisits: number;
@@ -25,6 +26,9 @@ const Dashboard = () => {
     if (data) {
       setAnalytics(JSON.parse(data));
     }
+    
+    // Track analytics view
+    trackAnalyticsView('Dashboard Principal');
   };
 
   const clearAnalytics = () => {
@@ -36,9 +40,16 @@ const Dashboard = () => {
       buttonClicks: 0,
       lastVisit: "Nunca"
     });
+    
+    // Track analytics clear action
+    trackAnalyticsView('Limpeza de Dados');
   };
 
   useEffect(() => {
+    // Track dashboard access
+    trackDashboardAccess();
+    trackViewContent("Casa dos Genéricos - Dashboard Analytics", "Analytics");
+    
     loadAnalytics();
   }, []);
 
